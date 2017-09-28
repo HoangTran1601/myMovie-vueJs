@@ -2,7 +2,7 @@
     <div class="listMovie">
        <ul>
             <li v-for="(movie, key) in movies">
-                <i class="fa fa-check" aria-hidden="true" v-bind:style="{ display: isChecked?'':'none'}"></i>
+                <i class="fa fa-check" aria-hidden="true" v-bind:style="{ display: movie.favorite?'':'none'}"></i>
                 <router-link :to="'/detail/' + movie.id">          
                     <img :src="movie.smallImgSrc" alt="">
                 </router-link>
@@ -14,8 +14,8 @@
 </template>
 
 <script>
-    import Service from '../services/service.js';
-    const restResourceService = new Service();
+    import MovieService from '../services/Movie.service.js';
+    const restResourceService = new MovieService();
     export default {
         name: 'list-movie',
         data() {

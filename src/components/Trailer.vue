@@ -5,8 +5,8 @@
 </template>
 
 <script>
-    import Service from '../services/service.js';
-    const restResourceService = new Service();
+    import MovieService from '../services/Movie.service.js';
+    const movieService = new MovieService();
     export default {
         name: 'trailer',
         data() {
@@ -16,7 +16,7 @@
         },
         methods: {
             getMovieById() {
-                this.movieSelected = restResourceService.getMovieById(this.$route.params.id);
+                this.movieSelected = movieService.getMovieById(this.$route.params.id);
             }
         },
         created: function() {

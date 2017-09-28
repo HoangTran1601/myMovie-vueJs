@@ -1,5 +1,5 @@
 <template> 
-    <div class="detail-movie hoang" :style="movieBackground" :class="toggleClick?'detail-movie-active': ''">
+    <div class="detail-movie hoang" :style="movieBackground" :class="movieSelected.favorite?'detail-movie-active': ''">
         <div class="curtain"></div>
         <div class="main-content">
             <div class="header">
@@ -26,9 +26,10 @@
                             <i class="fa fa-play" aria-hidden="true"></i>
                         </div>
                         <div class="favourite" v-on:click="addFavorite">
-                            <span>Add to favorites</span>
-                            <i class="fa fa-plus-square-o" aria-hidden="true" v-bind:style="{ display: toggleClick?'none':''}"></i>
-                            <i class="fa fa-minus-square-o" aria-hidden="true"  v-bind:style="{ display: toggleClick?'':'none'}"></i>
+                            <span v-bind:style="{ display: movieSelected.favorite?'none':''}">Add to favorites</span>
+                            <span v-bind:style="{ display: movieSelected.favorite?'':'none'}">Remove from favorites</span>
+                            <i class="fa fa-plus-square-o" aria-hidden="true" v-bind:style="{ display: movieSelected.favorite?'none':''}"></i>
+                            <i class="fa fa-minus-square-o" aria-hidden="true"  v-bind:style="{ display: movieSelected.favorite?'':'none'}"></i>
                         </div>
                     </div>
                 </div>
@@ -38,8 +39,8 @@
 </template>
 
 <script>
-    import Service from '../services/service.js';
-    const restResourceService = new Service();
+    import MovieService from '../services/Movie.service.js';
+    const movieService = new MovieService();
     export default {
         name: 'detail-movie',
         data() {
@@ -52,7 +53,7 @@
         },
         methods: {
             getMovieById() {
-                this.movieSelected = restResourceService.getMovieById(this.$route.params.id);
+                this.movieSelected = movieService.getMovieById(this.$route.params.id);
             },
             setBackground() {
                 this.movieBackground = {
@@ -62,14 +63,8 @@
                 }
             },
             addFavorite() {
-                this.toggleClick = !this.toggleClick;
-                var spanText = document.getElementsByClassName("favourite")[0].getElementsByTagName("span")[0];
-                if(this.toggleClick){
-                    spanText.innerHTML = "Remove from favorites";
-                } else {
-                    spanText.innerHTML = "Add to favorite";
-                }
-                
+                this.movieSelected.favorite = !this.movieSelected.favorite;
+                movieService.updateMovieByProp(this.$route.params.id, "favorite", this.movieSelected.favorite);
             },
             toggleClickState() {
                 this.$emit('hoang', this.toggleClick);
@@ -92,7 +87,6 @@
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat"
             }
-            // console.log(window.location.pathname)
         }
     }
 </script>
@@ -103,7 +97,7 @@
         
     }
     .detail-movie-active {
-        box-shadow: 10px 10px 1em gold, -10px -10px 1em gold
+        box-shadow: 10px 10px 1em gold, -10px -10px 1em rgba(255, 213, 0, 0.85)
     }
     .curtain {
         position: absolute;
